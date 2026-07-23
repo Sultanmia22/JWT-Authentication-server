@@ -10,7 +10,7 @@ const userSchema = new Schema<IUser> ({
         type: String,
         required: true
     },
-    username: {
+    userName: {
         type: String,
         required: true
     },
@@ -24,4 +24,4 @@ const userSchema = new Schema<IUser> ({
     }
 })
 
-export const user = model<IUser>("User",userSchema)
+export const User = model<IUser>("User",userSchema)
