@@ -1,27 +1,36 @@
-import { model, Schema } from "mongoose";
-import { IUser } from "../types/user.interface";
+import { Schema, model } from 'mongoose';
 
-const userSchema = new Schema<IUser> ({
+const userSchema = new Schema({
     name: {
-        type: String,
-        required: true
-    },
-    email: {
         type: String,
         required: true
     },
     userName: {
         type: String,
-        required: true
+        unique: true,
+        sparse: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
     password: {
         type: String,
-        required: true
+        required: false
+    },
+    image: {
+        type: String
     },
     role: {
         type: String,
-        required: true
-    }
-})
+        default: 'user'
+    },
+    provider: {
+        type: [String],
+        default: ['local']
+    },
 
-export const User = model<IUser>("User",userSchema)
+}, { timestamps: true });
+
+export const User = model('User', userSchema);

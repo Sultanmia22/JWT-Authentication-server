@@ -8,7 +8,9 @@ async function main() {
       throw new Error('Database URL is not provided in environment variables');
     }
 
-    await mongoose.connect(config.database_url);
+    await mongoose.connect(process.env.DATABASE_URI as string, {
+      dbName: 'jwt-authentication', 
+    });
     console.log('Connected to MongoDB successfully');
 
     app.listen(config.port, () => {

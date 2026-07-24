@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 const createUser = async (req: Request, res: Response) => {
     try {
 
-        const {name,userName,email,password} =  req.body;
+        const {name,userName,email,password,image} =  req.body;
 
         if(!name || !userName || !email || !password) {
             return res.status(400).json({
@@ -16,9 +16,16 @@ const createUser = async (req: Request, res: Response) => {
         const isExistingUser = await User.findOne({email})
 
         if(isExistingUser){
+
+            if(!isExistingUser.password){
+                return res.status(400).json({
+                    success: false,
+                    message: "You previously signed up using Google. Please log in by clicking the 'Continue with Google' button."
+                })
+            }
             return res.status(400).json({
                 success: false,
-                message: "User already exists",
+                message: "User already exists with this email.",
             })
         }
 
@@ -30,7 +37,9 @@ const createUser = async (req: Request, res: Response) => {
             userName,
             email,
             password: hashedPassword,
-            role: 'user',    
+            image,
+            role: 'user',
+            provider: ['local']    
         }
 
         const result = await User.create(newUser)
