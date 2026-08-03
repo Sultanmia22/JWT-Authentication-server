@@ -14,7 +14,7 @@ app.use('/api/v1',router);
 
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  res.send('JWT Authentication Server is Running...');
 });
 
 export default app;
