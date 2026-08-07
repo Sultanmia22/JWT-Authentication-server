@@ -123,10 +123,90 @@ const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+const socialLoginUser = async (req: Request, res: Response) => {
+  try {
+    const { email, name, provider, googleId } = req.body;
 
+    if (!email || !name || !provider) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      if (user?.googleId && user.googleId !== googleId) {
+        return res.status(400).json({
+          success: false,
+          message: "User already exists with a different Google ID.",
+        });
+      }
+
+      if (!user?.googleId) {
+        user.googleId = googleId;
+
+        if (!user.provider.includes(provider)) {
+          user.provider.push(provider);
+        }
+
+        await user.save();
+      }
+    } else {
+      const newUser = {
+        name,
+        email,
+        password: null,
+        provider: [provider],
+        googleId,
+        role: "user",
+      };
+
+      user = await User.create(newUser);
+    }
+
+    const token = jwt.sign(
+      {
+        email: user?.email,
+        id: user?._id,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    const userObj = user?.toObject();
+    delete userObj?.password;
+
+    res.status(201).json({
+      success: true,
+      message: "User logged in successfully",
+      data: {
+        token,
+        user: userObj,
+      },
+    });
+  } catch (er: unknown) {
+    console.error("Social login error:", er);
+
+    if (er instanceof Error) {
+      return res.status(500).json({
+        success: false,
+        message: er.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 export const userController = {
   createUser,
   loginUser,
-
+  socialLoginUser,
 };

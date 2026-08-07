@@ -9,5 +9,7 @@ router.post('/createuser',userController.createUser)
 // Login User Router
 router.post('/loginuser',userController.loginUser)
 
+// Social Login User Router
+router.post('/sociallogin',userController.socialLoginUser)
 
 export const userRoute = router
