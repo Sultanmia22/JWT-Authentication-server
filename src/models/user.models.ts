@@ -26,6 +26,11 @@ const userSchema = new Schema({
         type: String,
         default: 'user'
     },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
     provider: {
         type: [String],
         default: ['local']

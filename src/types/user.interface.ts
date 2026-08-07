@@ -4,6 +4,7 @@ export interface IUser {
   userName?: string;    
   password?: string;    
   role?: string;        
-  image?: string;       
+  image?: string; 
+  googleId?: string;      
   provider?: string[];  
 }
